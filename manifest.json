@@ -1,0 +1,34 @@
+{
+  "manifest_version": 3,
+  "name": "Szurubooru Image Uploader",
+  "version": "1.0.0",
+  "description": "Right-click upload images directly to Szurubooru",
+
+  "permissions": ["contextMenus", "activeTab", "storage", "tabs"],
+
+  "host_permissions": ["http://*/*", "https://*/*"],
+
+  "background": {
+    "service_worker": "background.js"
+  },
+
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "css": ["modal.css"]
+    }
+  ],
+
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Szurubooru Uploader Settings"
+  },
+
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  }
+}
