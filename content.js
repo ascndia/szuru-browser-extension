@@ -1,6 +1,17 @@
 // Content script - handles modal display and user interaction
 let currentImageUrl = "";
 
+// Close modal function
+function closeSzuruModal() {
+  const modal = document.getElementById("szuru-upload-modal");
+  if (modal) {
+    modal.remove();
+  }
+}
+
+// Make close function globally available
+window.closeSzuruModal = closeSzuruModal;
+
 // Listen for messages from background script
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.action === "showUploadModal") {
@@ -25,7 +36,7 @@ function showUploadModal(imageUrl, settings) {
       <div class="szuru-modal-content">
         <div class="szuru-modal-header">
           <h3>Upload to Szurubooru</h3>
-          <button class="szuru-close-btn" onclick="closeSzuruModal()">&times;</button>
+          <button class="szuru-close-btn">&times;</button>
         </div>
         
         <div class="szuru-modal-body">
@@ -55,7 +66,7 @@ function showUploadModal(imageUrl, settings) {
             </div>
             
             <div class="szuru-form-actions">
-              <button type="button" onclick="closeSzuruModal()" class="szuru-btn-cancel">Cancel</button>
+              <button type="button" class="szuru-btn-cancel">Cancel</button>
               <button type="submit" class="szuru-btn-upload">Upload</button>
             </div>
           </form>
@@ -68,6 +79,30 @@ function showUploadModal(imageUrl, settings) {
 
   // Add modal to page
   document.body.appendChild(modal);
+
+  // Add event listeners for closing the modal
+  const closeBtn = modal.querySelector(".szuru-close-btn");
+  const cancelBtn = modal.querySelector(".szuru-btn-cancel");
+  const overlay = modal.querySelector(".szuru-modal-overlay");
+
+  closeBtn.addEventListener("click", closeSzuruModal);
+  cancelBtn.addEventListener("click", closeSzuruModal);
+
+  // Close modal when clicking on overlay (but not the modal content)
+  overlay.addEventListener("click", (e) => {
+    if (e.target === overlay) {
+      closeSzuruModal();
+    }
+  });
+
+  // Close modal with Escape key
+  const handleEscKey = (e) => {
+    if (e.key === "Escape") {
+      closeSzuruModal();
+      document.removeEventListener("keydown", handleEscKey);
+    }
+  };
+  document.addEventListener("keydown", handleEscKey);
 
   // Handle form submission
   const form = document.getElementById("szuru-upload-form");
@@ -131,14 +166,3 @@ async function handleUpload(event) {
     uploadBtn.textContent = "Upload";
   }
 }
-
-// Close modal function
-function closeSzuruModal() {
-  const modal = document.getElementById("szuru-upload-modal");
-  if (modal) {
-    modal.remove();
-  }
-}
-
-// Make close function globally available
-window.closeSzuruModal = closeSzuruModal;
