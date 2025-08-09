@@ -15,7 +15,7 @@
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["content.js"],
+      "js": ["tag-autocomplete.js", "content.js"],
       "css": ["modal.css"]
     }
   ],
@@ -30,5 +30,12 @@
     "32": "icons/icon32.png",
     "48": "icons/icon48.png",
     "128": "icons/icon128.png"
-  }
+  },
+
+  "web_accessible_resources": [
+    {
+      "resources": ["tags/danbooru.csv"],
+      "matches": ["<all_urls>"]
+    }
+  ]
 }

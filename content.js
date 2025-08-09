@@ -47,8 +47,8 @@ function showUploadModal(imageUrl, settings) {
           <form id="szuru-upload-form">
             <div class="szuru-form-group">
               <label for="szuru-tags">Tags (comma-separated):</label>
-              <input type="text" id="szuru-tags" placeholder="tag1, tag2, tag3" required>
-              <small>At least one tag is required</small>
+              <input type="text" id="szuru-tags" placeholder="tag1, tag2, tag3">
+              <small>Tags are optional</small>
             </div>
             
             <div class="szuru-form-group">
@@ -108,6 +108,12 @@ function showUploadModal(imageUrl, settings) {
   const form = document.getElementById("szuru-upload-form");
   form.addEventListener("submit", handleUpload);
 
+  // Setup tag autocomplete
+  const tagsInput = document.getElementById("szuru-tags");
+  if (window.tagAutocomplete) {
+    window.tagAutocomplete.setupAutocomplete(tagsInput);
+  }
+
   // Focus on tags input
   document.getElementById("szuru-tags").focus();
 }
@@ -120,11 +126,6 @@ async function handleUpload(event) {
   const safety = document.getElementById("szuru-safety").value;
   const statusDiv = document.getElementById("szuru-upload-status");
   const uploadBtn = event.target.querySelector(".szuru-btn-upload");
-
-  if (!tags) {
-    alert("Please enter at least one tag");
-    return;
-  }
 
   // Show loading state
   uploadBtn.disabled = true;

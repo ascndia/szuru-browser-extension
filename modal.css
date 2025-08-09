@@ -189,3 +189,115 @@
   padding: 10px;
   border-radius: 4px;
 }
+
+/* Tag Autocomplete Styles */
+.szuru-autocomplete-container {
+  position: relative;
+}
+
+.szuru-autocomplete-suggestions {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: white;
+  border: 1px solid #ddd;
+  border-top: none;
+  border-radius: 0 0 4px 4px;
+  max-height: 200px;
+  overflow-y: auto;
+  z-index: 1000;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.szuru-autocomplete-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  cursor: pointer;
+  border-bottom: 1px solid #f0f0f0;
+  transition: background-color 0.15s ease;
+}
+
+.szuru-autocomplete-item:hover,
+.szuru-autocomplete-item.focused {
+  background-color: #f8f9fa;
+}
+
+.szuru-autocomplete-item:last-child {
+  border-bottom: none;
+}
+
+.tag-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+}
+
+.tag-name {
+  font-weight: 500;
+  font-size: 14px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tag-alias {
+  font-size: 12px;
+  color: #6c757d;
+  font-style: italic;
+  white-space: nowrap;
+}
+
+.post-count {
+  font-size: 12px;
+  color: #6c757d;
+  font-weight: 500;
+  white-space: nowrap;
+  margin-left: 8px;
+}
+
+/* Tag type colors */
+.tag-general {
+  color: #212529;
+}
+
+.tag-artist {
+  color: #fd7e14;
+}
+
+.tag-copyright {
+  color: #dc3545;
+}
+
+.tag-character {
+  color: #198754;
+}
+
+.tag-meta {
+  color: #6610f2;
+}
+
+.tag-unknown {
+  color: #6c757d;
+}
+
+/* Highlight matched text */
+.tag-name strong,
+.tag-alias strong {
+  background-color: #fff3cd;
+  font-weight: bold;
+}
+
+/* Ensure tags input works well with autocomplete */
+#szuru-tags {
+  border-radius: 4px 4px 0 0;
+}
+
+.szuru-autocomplete-container #szuru-tags:focus {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}

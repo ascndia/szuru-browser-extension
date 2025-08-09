@@ -67,9 +67,11 @@ async function uploadToSzurubooru(data) {
     // Prepare metadata
     const metadata = {
       tags: tags
-        .split(",")
-        .map((tag) => tag.trim())
-        .filter((tag) => tag),
+        ? tags
+            .split(",")
+            .map((tag) => tag.trim())
+            .filter((tag) => tag)
+        : [],
       safety: safety,
     };
 
