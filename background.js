@@ -1,39 +1,70 @@
 // Background script - handles context menus and communication
 chrome.runtime.onInstalled.addListener(() => {
-  // Create context menu for images
+  // Create context menu for images (open modal)
   chrome.contextMenus.create({
     id: "uploadToSzuru",
-    title: "Upload to Szurubooru",
+    title: "Upload to Szurubooru...",
+    contexts: ["image"],
+  });
+
+  // Create context menu for direct upload
+  chrome.contextMenus.create({
+    id: "quickUploadToSzuru",
+    title: "Quick Upload to Szurubooru",
     contexts: ["image"],
   });
 });
 
 // Handle context menu clicks
 chrome.contextMenus.onClicked.addListener(async (info, tab) => {
+  // Get settings first, as both actions need them
+  const settings = await chrome.storage.sync.get([
+    "szuruEndpoint",
+    "szuruUser",
+    "szuruToken",
+  ]);
+
+  if (!settings.szuruEndpoint || !settings.szuruUser || !settings.szuruToken) {
+    // Open settings popup if not configured, for both actions
+    chrome.runtime.openOptionsPage
+      ? chrome.runtime.openOptionsPage()
+      : window.open(chrome.runtime.getURL("popup.html"));
+    return;
+  }
+
   if (info.menuItemId === "uploadToSzuru") {
-    // Check if settings are configured
-    const settings = await chrome.storage.sync.get([
-      "szuruEndpoint",
-      "szuruUser",
-      "szuruToken",
-    ]);
-
-    if (
-      !settings.szuruEndpoint ||
-      !settings.szuruUser ||
-      !settings.szuruToken
-    ) {
-      // Open settings popup if not configured
-      chrome.action.openPopup();
-      return;
-    }
-
     // Send message to content script to show upload modal
     chrome.tabs.sendMessage(tab.id, {
       action: "showUploadModal",
       imageUrl: info.srcUrl,
       settings: settings,
     });
+  } else if (info.menuItemId === "quickUploadToSzuru") {
+    // Directly upload with default values
+    try {
+      const result = await uploadToSzurubooru({
+        imageUrl: info.srcUrl,
+        tags: "", // No tags for quick upload
+        safety: "safe", // Default to "safe"
+        settings: settings,
+      });
+
+      // Notify user of success
+      chrome.notifications.create({
+        type: "basic",
+        iconUrl: "icons/icon128.png",
+        title: "Upload Successful",
+        message: `Image uploaded as post #${result.postId}.`,
+      });
+    } catch (error) {
+      // Notify user of failure
+      chrome.notifications.create({
+        type: "basic",
+        iconUrl: "icons/icon128.png",
+        title: "Upload Failed",
+        message: `Error: ${error.message}`,
+      });
+    }
   }
 });
 

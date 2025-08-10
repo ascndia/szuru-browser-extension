@@ -4,7 +4,13 @@
   "version": "1.0.0",
   "description": "Right-click upload images directly to Szurubooru",
 
-  "permissions": ["contextMenus", "activeTab", "storage", "tabs"],
+  "permissions": [
+    "contextMenus",
+    "activeTab",
+    "storage",
+    "tabs",
+    "notifications"
+  ],
 
   "host_permissions": ["http://*/*", "https://*/*"],
 
